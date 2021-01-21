@@ -2,12 +2,12 @@ package route
 
 import (
 	"fmt"
-	"mvc-gin/config"
-	"mvc-gin/controllers/site"
-	"mvc-gin/middleware"
 	"github.com/gin-contrib/multitemplate"
 	"github.com/gin-gonic/gin"
 	"io/ioutil"
+	"mvc-gin/config"
+	"mvc-gin/controllers/site"
+	"mvc-gin/middleware"
 	"os"
 	"strings"
 )
@@ -38,9 +38,10 @@ func InitRouter() {
 	r := gin.New()
 	r.Use(gin.Recovery())
 	r.Use(middleware.Log())
-	r.HTMLRender = createMyRender()//动态加载模板文件，必须是两级目录 site/index => ./views/site/index.html 必须是html结尾
+	r.HTMLRender = createMyRender() //动态加载模板文件，必须是两级目录 site/index => ./views/site/index.html 必须是html结尾
 
 	r.GET("/site/login", site.Login)
+	r.POST("/site/login", site.Login)
 	r.Use(middleware.AuthCheck())
 	{
 		r.GET("/", site.Index)

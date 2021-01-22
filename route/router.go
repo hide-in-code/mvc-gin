@@ -8,6 +8,7 @@ import (
 	"mvc-gin/config"
 	"mvc-gin/controllers/site"
 	"mvc-gin/middleware"
+	"net/http"
 	"os"
 	"strings"
 )
@@ -41,9 +42,10 @@ func InitRouter() {
 	r := gin.New()
 	r.Use(gin.Recovery())
 	r.Use(middleware.Log())
-
 	r.Use(middleware.Recover)
-
+	r.StaticFS("/js", http.Dir("./js"))
+	r.StaticFS("/css", http.Dir("./css"))
+	r.StaticFS("/fonts", http.Dir("./fonts"))
 	r.HTMLRender = createViewsRender() //动态加载模板文件，必须是两级目录 site/index => ./views/site/index.html 必须是html结尾
 
 	r.GET("/site/login", site.Login)  //登录页面

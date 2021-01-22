@@ -15,8 +15,6 @@ import (
 func Index(c *gin.Context) {
 	user := controllers.GloInfo.User
 	tool.Dump(user.Username)
-	list := []int{1, 2, 3, 4}
-	tool.Dump(list[6])
 	c.HTML(200, "site/index", nil)
 }
 

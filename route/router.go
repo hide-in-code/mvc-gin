@@ -41,6 +41,9 @@ func InitRouter() {
 	r := gin.New()
 	r.Use(gin.Recovery())
 	r.Use(middleware.Log())
+
+	r.Use(middleware.Recover)
+
 	r.HTMLRender = createViewsRender() //动态加载模板文件，必须是两级目录 site/index => ./views/site/index.html 必须是html结尾
 
 	r.GET("/site/login", site.Login)  //登录页面

@@ -2,8 +2,8 @@ package redis
 
 import (
 	"fmt"
-	"mvc-gin/config"
 	redigo "github.com/garyburd/redigo/redis"
+	"mvc-gin/config"
 )
 
 var pool *redigo.Pool
@@ -25,13 +25,6 @@ func Client() redigo.Conn {
 	return pool.Get()
 }
 
-//对外使用方法
-/*
-_, err = redisClient.Do("set", coockieUserKey, "abc")
-if err != nil {
-	fmt.Println(err)
-	fmt.Println("redis set 失败")
-	c.Abort()
-	return
+func String(value interface{}, e error) (string, error) {
+	return redigo.String(value, e)
 }
- */

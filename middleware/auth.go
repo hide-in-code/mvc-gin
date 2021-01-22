@@ -2,7 +2,6 @@ package middleware
 
 import (
 	"encoding/json"
-	redigo "github.com/garyburd/redigo/redis"
 	"github.com/gin-gonic/gin"
 	"mvc-gin/component/redis"
 	"mvc-gin/component/tool"
@@ -26,7 +25,8 @@ func AuthCheck() gin.HandlerFunc {
 		//如果cookie有数据则在redis中查询用户缓存身份，代替session的作用，方便分布扩展
 		redisClient := redis.Client()
 		defer redisClient.Close() //redis关闭
-		userJson, err := redigo.String(redisClient.Do("hget", "user_hash", coockieUserKey))
+		userJson, err := redis.String(redisClient.Do("hget", "user_hash", coockieUserKey))
+		tool.Dump("redis")
 		tool.Dump(userJson)
 		if err != nil { //redis未取到数据
 			c.Redirect(http.StatusFound, "/site/login")
@@ -45,7 +45,7 @@ func AuthCheck() gin.HandlerFunc {
 
 		//将用户数据存放到全局的controller里面
 		method := c.Request.Method
-		(&controllers.GlobalInfo{}).InitController(method, *findUser)
+		(&controllers.GlobalInfo{}).InitController(method, *findUser, c)
 		c.Next()
 	}
 }

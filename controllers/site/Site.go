@@ -6,11 +6,15 @@ import (
 	"mvc-gin/component/mysql"
 	"mvc-gin/component/redis"
 	"mvc-gin/component/tool"
+	"mvc-gin/controllers"
 	"mvc-gin/models"
 	"net/http"
+	"strconv"
 )
 
 func Index(c *gin.Context) {
+	user := controllers.GloInfo.User
+	tool.Dump(user.Username)
 	c.HTML(200, "site/index", nil)
 }
 
@@ -25,18 +29,18 @@ func Test(c *gin.Context) {
 }
 
 func Login(c *gin.Context) {
-
 	method := c.Request.Method
-
-	if method == "GET" {
+	if method == "GET" || method == "" {
 		c.HTML(200, "site/login", nil)
 		c.Abort()
+		return
 	}
 
 	postData := map[string]interface{}{
 		"user":     "",
 		"password": "",
 	}
+
 	c.BindJSON(&postData)
 	if postData["user"] != "" && postData["password"] != "" { //传过来的数据不为空则需要查询数据
 		//db操作
@@ -44,7 +48,6 @@ func Login(c *gin.Context) {
 		db := mysql.GetMysqlDb()
 		db.Where(&models.User{Username: postData["user"].(string), Password: postData["password"].(string)}).First(&findUser)
 
-		tool.Dump(findUser.Username)
 		if findUser.Username == "" {
 			c.JSON(
 				http.StatusOK, gin.H{
@@ -56,7 +59,7 @@ func Login(c *gin.Context) {
 			return
 		}
 
-		//redis，序列化
+		//user对象序列化
 		userJson, err := json.Marshal(findUser)
 		if err != nil {
 			c.JSON(
@@ -69,6 +72,7 @@ func Login(c *gin.Context) {
 			return
 		}
 
+		//redis 操作
 		redisClient := redis.Client()
 		_, err = redisClient.Do("hset", "user_hash", findUser.Id, userJson)
 		if err != nil {
@@ -83,7 +87,7 @@ func Login(c *gin.Context) {
 		}
 
 		//cookie写入
-		c.SetCookie("userKey", string(findUser.Id), 10, "/", "127.0.0.1", false, true)
+		c.SetCookie("userKey", strconv.Itoa(int(findUser.Id)), 10, "/", "127.0.0.1", false, true)
 		c.JSON(
 			http.StatusOK, gin.H{
 				"status": http.StatusOK,

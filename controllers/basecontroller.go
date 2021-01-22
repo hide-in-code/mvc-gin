@@ -7,10 +7,10 @@ type GlobalInfo struct {
 	Method string
 }
 
-var globalInfo *GlobalInfo
+var GloInfo *GlobalInfo
 
-func initController(method string, user models.User) {
-	g := new(GlobalInfo)
-	g.Method = method
+func (g *GlobalInfo) InitController(method string, user models.User) {
 	g.User = user
+	g.Method = method
+	GloInfo = g
 }

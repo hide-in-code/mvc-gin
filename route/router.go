@@ -26,6 +26,9 @@ func createViewsRender() multitemplate.Renderer {
 	//路径解析
 	for _, childDir := range dir {
 		files, _ := ioutil.ReadDir(viewDir + childDir.Name())
+		//if childDir.Name() == "layout" {
+		//	continue
+		//}
 		for _, file := range files {
 			viewName := childDir.Name() + "/" + strings.Replace(file.Name(), ".html", "", -1)
 			viewPath := viewDir + childDir.Name() + "/" + file.Name()
@@ -43,9 +46,9 @@ func InitRouter() {
 	r.Use(gin.Recovery())
 	r.Use(middleware.Log())
 	r.Use(middleware.Recover)
-	r.StaticFS("/js", http.Dir("./js"))
-	r.StaticFS("/css", http.Dir("./css"))
-	r.StaticFS("/fonts", http.Dir("./fonts"))
+	r.StaticFS("/js", http.Dir("./static/js"))
+	r.StaticFS("/css", http.Dir("./static/css"))
+	r.StaticFS("/fonts", http.Dir("./static/fonts"))
 	r.HTMLRender = createViewsRender() //动态加载模板文件，必须是两级目录 site/index => ./views/site/index.html 必须是html结尾
 
 	r.GET("/site/login", site.Login)  //登录页面

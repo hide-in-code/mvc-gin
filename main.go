@@ -8,7 +8,6 @@ import (
 
 func main() {
 	models.InitDb()
-
 	//modelgen.Genertate("article") //自动生成gorm的model结构
 	route.InitRouter()
 }

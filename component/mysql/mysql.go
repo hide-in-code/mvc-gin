@@ -2,11 +2,11 @@ package mysql
 
 import (
 	"fmt"
-	"mvc-gin/config"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
 	"gorm.io/gorm/schema"
+	"mvc-gin/config"
 	"sync"
 	"time"
 )

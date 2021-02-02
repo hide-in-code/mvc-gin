@@ -28,7 +28,7 @@ func AuthCheck() gin.HandlerFunc {
 		userJson, err := redis.String(redisClient.Do("hget", "user_hash", coockieUserKey))
 		tool.Dump("redis")
 		tool.Dump(userJson)
-		if err != nil { //redis未取到数据
+		if err != nil { //redis未取到数据或者redis过期
 			c.Redirect(http.StatusFound, "/site/login")
 			c.Abort()
 			return
